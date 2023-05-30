@@ -11,6 +11,10 @@ class DetailsVC: UIViewController {
     
     var fetchedData : [WeatherList]? = nil
     var weatherIconVM = WeatherViewModel()
+    
+    //Ganesh Aguru
+    
+
 
     @IBOutlet weak var minmaxL: UILabel!
     @IBOutlet weak var mainTempL: UILabel!
