@@ -57,7 +57,7 @@ class DetailsVC: UIViewController {
             
 
             
-            weatherIconVM.shared.downloadIcon(iconName: icon) { url in
+            weatherIconVM.downloadIconVM(iconName: icon) { url in
                 let iconData = try! Data(contentsOf: url)
                 
                 DispatchQueue.main.async {
@@ -80,6 +80,7 @@ class DetailsVC: UIViewController {
 
         if let apparentTemp = fetchedData?[0].main.feels_like{
             let feelslike = String(apparentTemp)
+            
             apparentTempL.text = feelslike
         }
         

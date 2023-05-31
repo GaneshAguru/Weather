@@ -10,6 +10,7 @@ import CoreLocation
 
 class ViewController: UIViewController {
     
+    
     var weatherData : [WeatherList] = []
     
     //create a reference to the view model
@@ -18,10 +19,38 @@ class ViewController: UIViewController {
     @IBOutlet weak var searchL: UITextField!
     
     
+    override func viewDidAppear(_ animated: Bool) {
+        let connection = weatherVM.isConnected
+      print(connection)
+        if connection{
+           
+            
+        }else{
+            let alert = UIAlertController(title: "No Internet", message: "You are not connected to the Internet. Turn On!!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Mobile Data", style: .default,handler: { action in
+                print("Mobile data turned on..")
+                
+                
+           let path = UIApplication.openSettingsURLString
+                let pathnew = URL(string: path)
+                UIApplication.shared.open(pathnew!)
+                
+                
+            }))
+            alert.addAction(UIAlertAction(title: "Wifi", style: .default,handler: { action in
+                print("Wifi enabled...")
+            }))
+            alert.addAction(UIAlertAction(title: "close", style: .destructive))
+            show(alert, sender: self)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("GaneshAguru")
+        var shouldAutorotate : Bool { return false }
+        
+      
         
     }
 
@@ -40,7 +69,7 @@ class ViewController: UIViewController {
             
 
             
-            self.weatherVM.shared.getWeatherData(lat: lat, long: long) { weatherArray in
+            self.weatherVM.getWeatherDataVM(lat: lat, long: long) { weatherArray in
                 DispatchQueue.main.async {
                       let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
                       vc.fetchedData = weatherArray
@@ -64,11 +93,11 @@ class ViewController: UIViewController {
             let latitude = Double(lat ?? 0)
             let long = geoData?[0].location?.coordinate.longitude
             let longitude = Double(long ?? 0)
-            print("Latitude:\(lat!),Longitude:\(long!)")
+//            print("Latitude:\(lat!),Longitude:\(long!)")
             
 
             
-            self.weatherVM.shared.getWeatherData(lat: latitude, long: longitude) { weatherArray in
+            self.weatherVM.getWeatherDataVM(lat: latitude, long: longitude) { weatherArray in
                 DispatchQueue.main.async {
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
                     vc.fetchedData = weatherArray
