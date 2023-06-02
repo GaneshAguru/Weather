@@ -65,8 +65,10 @@ struct WebUtility{
         let iconUrl = "https://openweathermap.org/img/wn/\(iconName)@2x.png"
         
         let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        print(docURL)
        
         let imagPath = docURL.appendingPathComponent(iconName)
+        print(imagPath)
         
         if FileManager.default.fileExists(atPath: imagPath.relativePath){
             callback(imagPath)
@@ -105,11 +107,12 @@ struct WebUtility{
     
     
     //higher order
-    func getWeatherData(lat:Double,long:Double,handler:@escaping([WeatherList])->Void){
+    func getWeatherData(lat:Double,long:Double,units:String,handler:@escaping([WeatherList])->Void){
         
         //do http communication
         
-        let weatherDataUrl = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(long)&appid=dc8606b5294e9f24b042383e39d8ccaa&units=metric"
+        let weatherDataUrl = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(long)&appid=dc8606b5294e9f24b042383e39d8ccaa&units=\(units)"
+        print("units: \(units)")
         print(weatherDataUrl)
         // 1. reference of URLSeffion
         let session = URLSession.shared

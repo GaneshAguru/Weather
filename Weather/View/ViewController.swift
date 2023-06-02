@@ -9,8 +9,7 @@ import UIKit
 import CoreLocation
 
 class ViewController: UIViewController {
-    
-    
+   
     var weatherData : [WeatherList] = []
     
     //create a reference to the view model
@@ -21,10 +20,9 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         let connection = weatherVM.isConnected
-      print(connection)
+     
         if connection{
-           
-            
+    
         }else{
             let alert = UIAlertController(title: "No Internet", message: "You are not connected to the Internet. Turn On!!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Mobile Data", style: .default,handler: { action in
@@ -48,68 +46,44 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var shouldAutorotate : Bool { return false }
-        
-      
+//        var shouldAutorotate : Bool { return false }
         
     }
 
 
 
-    @IBAction func citySearch(_ sender: UIButton) {
+    fileprivate func getCoordAndNavigate(_ place: String) {
         let geoCoder = CLGeocoder()
-        let place = searchL.text ?? ""
-        print(place)
-        
         geoCoder.geocodeAddressString(place) { geoData, _ in
             let lat:Double
             let long:Double
             lat = geoData?[0].location?.coordinate.latitude ?? 0
             long = geoData?[0].location?.coordinate.longitude ?? 0
             
-
             
-            self.weatherVM.getWeatherDataVM(lat: lat, long: long) { weatherArray in
-                DispatchQueue.main.async {
-                      let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
-                      vc.fetchedData = weatherArray
-                      self.present(vc, animated: true)
-                }
-            }
+            let coordinates = [lat,long]
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
+            vc.latLong = coordinates
+            self.present(vc, animated: true)
             
         }
+    }
+    
+    @IBAction func citySearch(_ sender: UIButton) {
         
+        let place = searchL.text ?? ""
+        print(place)
         
+        getCoordAndNavigate(place)
     }
     
     
     @IBAction func topCityClick(_ sender: UIButton) {
-        let geoCoder = CLGeocoder()
+    
         let selectedCity :String?
         selectedCity =  sender.titleLabel?.text
-        geoCoder.geocodeAddressString(selectedCity ?? "") { geoData, _ in
-            
-            let lat = geoData?[0].location?.coordinate.latitude
-            let latitude = Double(lat ?? 0)
-            let long = geoData?[0].location?.coordinate.longitude
-            let longitude = Double(long ?? 0)
-//            print("Latitude:\(lat!),Longitude:\(long!)")
-            
-
-            
-            self.weatherVM.getWeatherDataVM(lat: latitude, long: longitude) { weatherArray in
-                DispatchQueue.main.async {
-                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
-                    vc.fetchedData = weatherArray
-                    self.present(vc, animated: true)
-                }
-            }
-            
-        }
         
-        
-        
-        
+        getCoordAndNavigate(selectedCity ?? "")
         
     }
     
@@ -128,19 +102,27 @@ class ViewController: UIViewController {
         let long:Double
         lat = currentLocation.coordinate.latitude
         long = currentLocation.coordinate.longitude
-
         
-        self.weatherVM.getWeatherDataVM(lat: lat, long: long) { weatherArray in
-            DispatchQueue.main.async {
-                let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
-                vc.fetchedData = weatherArray
-                self.present(vc, animated: true)
-            }
-        }
+        let coordinates = [lat,long]
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "detailsvc") as! DetailsVC
+        vc.latLong = coordinates
+        
+        self.present(vc, animated: true)
         
     }
     
     
+    @IBAction func modeChange(_ sender: UIButton) {
+       
+    }
     
 }
+
+
+    
+    
+   
+    
+    
+
 

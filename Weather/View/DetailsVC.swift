@@ -7,15 +7,27 @@
 
 import UIKit
 
+
+protocol ChosenDegrees{
+    func degreeSelected(str:String)
+}
+
 class DetailsVC: UIViewController {
+    
+    var delegate : ChosenDegrees!
+    
+    var weatherVM = WeatherViewModel()
+    
+    var latLong : [Double] = []
+    var placeName : String = ""
     
     var fetchedData : [WeatherList]? = nil
     var weatherIconVM = WeatherViewModel()
     
-    //Ganesh Aguru
     
 
-
+    @IBOutlet weak var changeDegreesSC: UISegmentedControl!
+    
     @IBOutlet weak var minmaxL: UILabel!
     @IBOutlet weak var mainTempL: UILabel!
     @IBOutlet weak var placeL: UILabel!
@@ -37,27 +49,53 @@ class DetailsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
        
-      
-        if let description = fetchedData?[0].weather[0].description{
-            let vString = description.capitalized
-            weatherDescL.text = vString
-        }else{
-            weatherDescL.text = nil
-        }
-      
-        placeL.text = fetchedData?[0].name
-        
-        if let mainTemp = fetchedData?[0].main.temp{
-            let mainTemp = String(mainTemp)
-            mainTempL.text = "\(mainTemp)°C"
-        }else{}
-        
-        if let icon = fetchedData?[0].weather[0].icon{
-            print(icon)
-            
+       let lat = latLong[0]
+       let long = latLong[1]
 
+        weatherVM.getWeatherDataVM(lat: lat, long: long, units: "metric") { weatherArray in
+            let temp = String(weatherArray[0].main.temp)
+            let apparentTemp = String(weatherArray[0].main.feels_like)
+            let minTemp = String(weatherArray[0].main.temp_min)
+            let maxTemp = String(weatherArray[0].main.temp_max)
+            let name = String(weatherArray[0].name)
             
-            weatherIconVM.downloadIconVM(iconName: icon) { url in
+            DispatchQueue.main.async {
+                self.mainTempL.text = "\(temp) °C"
+                self.dataAssigning()
+                self.apparentTempL.text = apparentTemp
+                self.minmaxL.text = "\(minTemp)°C/\(maxTemp)°C"
+                self.placeL.text = name
+            }
+        }
+       
+    }
+    
+
+    
+    func dataAssigning(){
+        
+        let lat = latLong[0]
+        let long = latLong[1]
+        
+        weatherVM.getWeatherDataVM(lat: lat, long: long, units: "") { weatherArray in
+            let visibility = String(weatherArray[0].visibility)
+            let windSpeed = String(weatherArray[0].wind.speed)
+            let humidity = String(weatherArray[0].main.humidity)
+            let direction = String(weatherArray[0].wind.deg)
+            let airP = String(weatherArray[0].main.pressure)
+            let description = String(weatherArray[0].weather[0].description)
+            let icon = String(weatherArray[0].weather[0].icon)
+            
+            DispatchQueue.main.async {
+                self.visibilityL.text = visibility
+                self.windSpeedL.text = windSpeed
+                self.humudityL.text = humidity
+                self.directionL.text = direction
+                self.airPressureL.text = airP
+                self.weatherDescL.text = description
+                            }
+            
+            self.weatherIconVM.downloadIconVM(iconName: icon) { url in
                 let iconData = try! Data(contentsOf: url)
                 
                 DispatchQueue.main.async {
@@ -65,53 +103,72 @@ class DetailsVC: UIViewController {
                 }
             }
             
+        }
+        
+    }
+    
+    
+    
+    @IBAction func changeDegreesAction(_ sender: UISegmentedControl) {
+    
+        let lat = latLong[0]
+        let long = latLong[1]
+        
+        switch sender.selectedSegmentIndex{
+            
+        case 0:
+            weatherVM.getWeatherDataVM(lat: lat, long: long, units: "metric") { weatherArray in
+                let temp = weatherArray[0].main.temp
+                let apparentTemp = String(weatherArray[0].main.feels_like)
+                let minTemp = String(weatherArray[0].main.temp_min)
+                let maxTemp = String(weatherArray[0].main.temp_max)
+                let str = String(temp)
+                DispatchQueue.main.async {
+                    self.mainTempL.text = "\(str) °C"
+                    self.apparentTempL.text = apparentTemp
+                    self.dataAssigning()
+                    self.minmaxL.text = "\(minTemp)°C/\(maxTemp)°C"
+                }
+            }
             
             
-
+        case 1:
+            weatherVM.getWeatherDataVM(lat: lat, long: long, units: "imperial") { weatherArray in
+                let temp = weatherArray[0].main.temp
+                let apparentTemp = String(weatherArray[0].main.feels_like)
+                let minTemp = String(weatherArray[0].main.temp_min)
+                let maxTemp = String(weatherArray[0].main.temp_max)
+                let str = String(temp)
+                DispatchQueue.main.async {
+                    self.mainTempL.text = "\(str) °F"
+                    self.apparentTempL.text = apparentTemp
+                    self.dataAssigning()
+                    self.minmaxL.text = "\(minTemp)°F/\(maxTemp)°F"
+                }
+            }
+           
+        case 2:
+            weatherVM.getWeatherDataVM(lat: lat, long: long, units: "default") { weatherArray in
+                let temp = weatherArray[0].main.temp
+                let apparentTemp = String(weatherArray[0].main.feels_like)
+                let minTemp = String(weatherArray[0].main.temp_min)
+                let maxTemp = String(weatherArray[0].main.temp_max)
+                let str = String(temp)
+                DispatchQueue.main.async {
+                    self.mainTempL.text = "\(str) °K"
+                    self.apparentTempL.text = apparentTemp
+                    self.dataAssigning()
+                    self.minmaxL.text = "\(minTemp)°K/\(maxTemp)°K"
+                }
+            }
+          
+        default:
+            break
         }
         
-
-        if let minmaxTemp = fetchedData?[0].main{
-            let min = String(minmaxTemp.temp_min)
-            let max = String(minmaxTemp.temp_max)
-            minmaxL.text = "\(min)°C/\(max)°C"
-        }else{}
         
-
-        if let apparentTemp = fetchedData?[0].main.feels_like{
-            let feelslike = String(apparentTemp)
-            
-            apparentTempL.text = feelslike
-        }
-        
-        if let visibility = fetchedData?[0].visibility{
-            let visibile = String(visibility)
-            visibilityL.text = visibile
-        }
-        
-        if let airP = fetchedData?[0].main.pressure{
-            let pressure = String(airP)
-            airPressureL.text = pressure
-        }
-        if let dir = fetchedData?[0].wind.deg{
-            let direction = String(dir)
-            directionL.text = direction
-        }
-        
-        if let humid = fetchedData?[0].main.humidity{
-            let humidity = String(humid)
-            humudityL.text = humidity
-        }
-        
-        if let ws = fetchedData?[0].wind.speed{
-            let windSpeed = String(ws)
-            windSpeedL.text = windSpeed
-        }
-      
-       
     }
     
 
     
-
 }

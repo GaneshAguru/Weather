@@ -40,10 +40,10 @@ class WeatherViewModel{
    private let shared = WebUtility.shared
     
     
-    func getWeatherDataVM(lat:Double,long:Double,handler: @escaping ([WeatherList])->Void){
+    func getWeatherDataVM(lat:Double,long:Double,units:String,handler: @escaping ([WeatherList])->Void){
         
         if isConnected{
-            WebUtility.shared.getWeatherData(lat: lat, long: long, handler: handler)
+            WebUtility.shared.getWeatherData(lat: lat, long: long, units: units, handler: handler)
         }else{
           
         }
