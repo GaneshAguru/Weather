@@ -357,7 +357,7 @@
                                     <action selector="changeDegreesAction:" destination="awd-zJ-6gF" eventType="valueChanged" id="QQg-FL-2lL"/>
                                 </connections>
                             </segmentedControl>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="arrow.up.forward.app.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="zcc-Km-Bxc">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="arrow.up" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="zcc-Km-Bxc">
                                 <rect key="frame" x="329" y="636" width="48" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -371,6 +371,7 @@
                         <outlet property="airPressureL" destination="9md-RX-s7G" id="tnk-Ru-kuH"/>
                         <outlet property="apparentTempL" destination="XYA-Yl-m0E" id="hV0-x4-YBe"/>
                         <outlet property="changeDegreesSC" destination="FTZ-3e-8q4" id="Unh-fM-9wO"/>
+                        <outlet property="directionArrowIV" destination="zcc-Km-Bxc" id="IDd-vY-P9E"/>
                         <outlet property="directionL" destination="Ye5-Ig-ZTm" id="ZBx-Xp-7qq"/>
                         <outlet property="humudityL" destination="VBA-ly-XSA" id="20c-uJ-StJ"/>
                         <outlet property="iconIV" destination="HOg-X9-iuM" id="g2g-5o-B0E"/>
@@ -388,7 +389,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="arrow.up.forward.app.fill" catalog="system" width="128" height="114"/>
+        <image name="arrow.up" catalog="system" width="118" height="128"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
     </resources>
 </document>

@@ -8,14 +8,11 @@
 import UIKit
 
 
-protocol ChosenDegrees{
-    func degreeSelected(str:String)
-}
+
 
 class DetailsVC: UIViewController {
     
-    var delegate : ChosenDegrees!
-    
+    let cl = CALayer()
     var weatherVM = WeatherViewModel()
     
     var latLong : [Double] = []
@@ -35,6 +32,7 @@ class DetailsVC: UIViewController {
     
     @IBOutlet weak var iconIV: UIImageView!
     
+    @IBOutlet weak var directionArrowIV: UIImageView!
     
     //weather details labels
     @IBOutlet weak var apparentTempL: UILabel!
@@ -84,7 +82,12 @@ class DetailsVC: UIViewController {
             let direction = String(weatherArray[0].wind.deg)
             let airP = String(weatherArray[0].main.pressure)
             let description = String(weatherArray[0].weather[0].description)
+            
             let icon = String(weatherArray[0].weather[0].icon)
+            
+            
+            
+        
             
             DispatchQueue.main.async {
                 self.visibilityL.text = visibility
@@ -93,7 +96,9 @@ class DetailsVC: UIViewController {
                 self.directionL.text = direction
                 self.airPressureL.text = airP
                 self.weatherDescL.text = description
-                            }
+                
+                self.directionArrowIV.transform = self.directionArrowIV.transform.rotated(by: CGFloat(weatherArray[0].wind.deg))
+            }
             
             self.weatherIconVM.downloadIconVM(iconName: icon) { url in
                 let iconData = try! Data(contentsOf: url)
